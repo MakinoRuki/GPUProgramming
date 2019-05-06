@@ -11,8 +11,6 @@ int main() {
     hello_bot_a.SayIt();
     SayHelloB<false> hello_bot_b;
     hello_bot_b.SayIt();
- //   say_hello.SayIt();
-    //cout<<"Hello World !!!"<<endl;
     cout << vectorAddHello(3, 6)<<endl;
     return 0;
 }

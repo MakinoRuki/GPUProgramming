@@ -12,5 +12,4 @@ int vectorAdd(int a, int b) {
     cudaMemcpy(&c, dev_c, sizeof(int), cudaMemcpyDeviceToHost);
     cudaFree(dev_c);
     return c;
-    //cout<<"hello vector add !!!";
 }

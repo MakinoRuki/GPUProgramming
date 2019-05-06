@@ -6,7 +6,6 @@
 #include <cuda.h>
 #include "cuda_runtime.h"
 using namespace std;
-//#include <helper_cuda.h>
 
 
 #define RANDOM(x) (rand() % x)

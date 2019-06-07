@@ -76,9 +76,9 @@ void fft(Cplx* a, int n, int threads) {
     	calc_fft<<<ceil(n/threads), threads>>>(ra, i, threads);
     }
 
-    Cplx* result;
-    result = (Cplx*)malloc(data_size);
-    cudaMemcpy(result, ra, data_size, cudaMemcpyDeviceToHost);
+    // Cplx* result;
+    // result = (Cplx*)malloc(data_size);
+    cudaMemcpy(a, ra, data_size, cudaMemcpyDeviceToHost);
     cudaFree(da);
     cudaFree(ra);
 }

@@ -74,10 +74,6 @@ void fft(Cplx* a, int n, int threads) {
     // }
     for (int i = 2; i < n; i *= 2) {
     	calc_fft<<<ceil(n/threads), threads>>>(ra, i, threads);
-        for (int j = 0; j < n; j += i) {
-            int k = i / 2;
-            calc_fft<<<ceil(k/threads), threads>>>(ra, k, i, j, threads);
-        }
     }
 
     Cplx* result;

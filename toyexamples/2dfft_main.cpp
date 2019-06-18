@@ -52,7 +52,7 @@ int main() {
     // }
     readImg(mat);
     cout<<rows<<" "<<cols<<endl;
-    fft_2d(mat, rows, cols, 1, false);
+    fft_2d(mat, rows, cols, 4, false);
     saveResult(mat, "/home/ruki/Documents/lena_fft.jpg");
     for (int i = 0; i < rows; ++i) {
         for (int j = 0; j < cols; ++j) {
@@ -61,7 +61,7 @@ int main() {
         }
     }
     saveResult(mat, "/home/ruki/Documents/lena_fft_log.jpg");
-    fft_2d(mat, rows, cols, 1, true);
+    fft_2d(mat, rows, cols, 4, true);
     saveResult(mat, "/home/ruki/Documents/lena_fft_rev.jpg");
     return 0;
 }

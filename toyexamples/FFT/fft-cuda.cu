@@ -40,14 +40,18 @@ __global__ void bit_reorder(float2* da, float2* ra, int n, int s, int threads) {
 //     ra[id2] = t;
 // }
 
-__global__ void calc_fft(float2* ra, int m, int threads) {
+__global__ void calc_fft(float2* ra, int m, int threads, bool isrev) {
     int tid = blockIdx.x * threads + threadIdx.x;
     if (tid % m < m / 2) {
     	int id = tid;
 	    int id2 = id + m / 2;
 	    float2 c;
 	    c.x = __cosf((2.0 * M_PI * (tid % m)) / (1.0 * m));
-	    c.y = -__sinf((2.0 * M_PI * (tid % m)) / (1.0 * m));
+	    if (isrev) {
+            c.y = -__sinf((2.0 * M_PI * (tid % m)) / (1.0 * m));
+        } else {
+            c.y = __sinf((2.0 * M_PI * (tid % m)) / (1.0 * m));
+        }
 	    float2 u, t;
 	    u = CplxAdd(ra[id], CplxMul(c, ra[id2]));
 	    t = CplxAdd(ra[id], CplxInv(CplxMul(c, ra[id2])));
@@ -56,7 +60,7 @@ __global__ void calc_fft(float2* ra, int m, int threads) {
     }
 }
 
-void fft(float2* a, int n, int threads) {
+void fft(float2* a, int n, int threads, bool isrev) {
     size_t data_size = n * sizeof(float2);
     float2* ra;
     float2* da;
@@ -75,13 +79,19 @@ void fft(float2* a, int n, int threads) {
     //         calc_fft<<<ceil(k/threads), threads>>>(ra, k, i, j, threads);
     //     }
     // }
-    for (int i = 2; i < n; i *= 2) {
-    	calc_fft<<<ceil(n/threads), threads>>>(ra, i, threads);
+    for (int i = 2; i <= n; i *= 2) {
+    	calc_fft<<<ceil(n/threads), threads>>>(ra, i, threads, isrev);
     }
 
     // float2* result;
     // result = (float2*)malloc(data_size);
     cudaMemcpy(a, ra, data_size, cudaMemcpyDeviceToHost);
+    if (isrev) {
+        for (int i = 0; i < n; ++i) {
+            a[i].x /= (float)n;
+            a[i].y /= (float)n;
+        }
+    }
     cudaFree(da);
     cudaFree(ra);
 }

@@ -2,6 +2,7 @@
 #include <cstdio>
 #include <cstring>
 #include <algorithm>
+#include <time.h>
 using namespace std;
 struct cplx {
     float x, y;
@@ -70,18 +71,22 @@ void fft(cplx* a, int n) {
         }   
     }
 }
+// when n from 512 -> 524288, non-GPU code run time from 1787 -> 677096
+// while GPU code run time from 87942 -> 98717.
 int main() {
     float b[16] = {15, 32, 9, 222, 118, 151, 5, 7, 56, 233, 56, 121, 235, 89, 98, 111};
-    cplx a[16];
-    for (int i = 0; i < 16; ++i) {
-        a[i].x = b[i];
+    cplx a[524289];
+    for (int i = 0; i < 524288; ++i) {
+        a[i].x = i;
         a[i].y = 0;
     }
-    bitrev(a, 16);
-    fft(a, 16);
-    for (int i = 0; i < 16; ++i) {
-        cout<<a[i].x<<" "<<a[i].y<<endl;
-    }
+    clock_t t1 = clock();
+    bitrev(a, 524288);
+    fft(a, 524288);
+    cout<<(clock() - t1)<<endl;
+    // for (int i = 0; i < 16; ++i) {
+    //     cout<<a[i].x<<" "<<a[i].y<<endl;
+    // }
     return 0;
 }
 
